@@ -24,7 +24,7 @@
                 <div class="mt-2">Value: {{ society }}</div>
               </div>
               <router-link to="/survey">
-                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Commencez le test</button>
+                <button v-on:click="addCandidate()" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Commencez le test</button>
               </router-link>
             </form>
           </div>
@@ -40,12 +40,31 @@
 </style>
 
 <script>
+
+import PouchDB from 'pouchdb'
+var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD : 28/10/2019
+var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données : 28/10/2019
+
 export default {
   data () {
     return {
       name: '',
       firstName: '',
       society: ''
+    }
+  },
+  methods: {
+    addCandidate: function () {
+      var todo = {
+        _id: new Date().toISOString(),
+        name: this.name,
+        firstName: this.firstName,
+        society: this.society
+      }
+      db.put(todo).then(function (doc) {
+        console.log(doc)
+      })
+      db.replicate.to(url)
     }
   }
 }

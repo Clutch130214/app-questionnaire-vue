@@ -1,12 +1,13 @@
+
 <template>
-<!-- This snippet uses Font Awesome 5 Free as a dependency. You can download it at fontawesome.io! -->
 <body>
   <div class="container">
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card card-signin my-5">
           <div class="card-body">
-            <h5 class="card-title text-center">Question : {{ numQuestion }}</h5>
+            <!-- Composant Question -->
+            <Question :question = question[numQuestion] ></Question>
             <form class="form-signin">
               <div class="form-label-group">
                 <input v-model="response" type="text" id="inputEmail" class="form-control" placeholder="Response" required autofocus>
@@ -30,11 +31,35 @@
 </style>
 
 <script>
+import Question from '../components/Question.vue'
+import PouchDB from 'pouchdb'
+var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD : 28/10/2019
+var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données : 28/10/2019
+
 export default {
+  components: {
+    Question
+  },
   data () {
     return {
       numQuestion: 0,
-      response: ''
+      response: '',
+      question: [
+        'Le fromage',
+        'Oui',
+        'Obiwan Kenobi'
+      ]
+    }
+  },
+  methods: {
+    addDB: function () {
+      var todo = {
+        _id: 'test'
+      }
+      db.put(todo).then(function (doc) {
+        console.log(doc)
+      })
+      db.replicate.to(url)
     }
   }
 }

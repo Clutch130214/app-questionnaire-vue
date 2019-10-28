@@ -1,24 +1,7 @@
 # app-questionnaire-vue
 
-## Project setup
-```
-npm install
-```
+# 28/10/2019
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Mettre en place couchDb/PouchDB
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Mettre en place le questionnaire

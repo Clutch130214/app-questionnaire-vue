@@ -55,7 +55,7 @@ export default {
   methods: {
     // Fonction qui ajoute un nouveau candidat en BD et renvoie vers la page de questionnaire
     addCandidate: function () {
-      if (this.name !== '' || this.firstName !== '' || this.society !== '') {
+      if (this.name !== '' && this.firstName !== '' && this.society !== '') {
         var candidate = {
           _id: 'user_' + this.name,
           name: this.name,

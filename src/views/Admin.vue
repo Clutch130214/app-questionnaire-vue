@@ -22,33 +22,15 @@
 </style>
 
 <script>
-
 import PouchDB from 'pouchdb'
-var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD : 28/10/2019
-var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données : 28/10/2019
-const uuidv1 = require('uuid/v1')
+var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD
+var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données
+db.replicate.from(url)
 
 export default {
   data () {
     return {
-      name: '',
-      firstName: '',
-      society: ''
-    }
-  },
-  methods: {
-    addCandidate: function () {
-      var candidate = {
-        _id: uuidv1(),
-        name: this.name,
-        firstName: this.firstName,
-        society: this.society
-      }
-      var vm = this
-      db.put(candidate).then(function (doc) {
-        vm.$router.push({ path: '/survey', query: { user: doc.id } })
-      })
-      db.replicate.to(url)
+      users: []
     }
   }
 }

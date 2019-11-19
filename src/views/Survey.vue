@@ -9,6 +9,7 @@
             <div v-if="this.questionnaire.questions && !this.surveyIsFinish">
               <!-- Composant Question -->
               <Question :question = this.questionnaire.questions[numQuestion].question ></Question>
+              <!-- Liste des reponses possible sélectionnable avec un radio button -->
                 <b-form-group>
                   <b-form-radio-group
                     v-model="selected"
@@ -17,14 +18,16 @@
                     stacked
                   ></b-form-radio-group>
                 </b-form-group>
+                <!-- Bouton pour passer à la question suivante -->
                 <div v-on:click="addResponse()">
                   <button class="btn btn-lg btn-primary btn-block text-uppercase">Validez</button>
                 </div>
             </div>
+            <!-- Composant Result qui s'affiche une fois le questionnaire finie -->
             <div v-if="this.surveyIsFinish">
               <Result :result = this.getNbGoodResponse() :questionnaire = this.questionnaire.questions :summary = this.responseSelected ></Result>
               <div class="padding-left-1 align-left">
-                  <router-link to="/home"><button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Retour à l'accueil</button></router-link>
+                  <router-link to="/home"><button class="btn btn-lg btn-primary btn-block text-uppercase">Retour à l'accueil</button></router-link>
               </div>
             </div>
           </div>
@@ -44,8 +47,8 @@ import Question from '../components/Question.vue'
 import Result from '../components/Result.vue'
 import Questionnaire from '../bddJson/Questionnaire.json'
 import PouchDB from 'pouchdb'
-var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD : 28/10/2019
-var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données : 28/10/2019
+var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD
+var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données
 db.replicate.from(url)
 
 export default {
@@ -63,8 +66,11 @@ export default {
     }
   },
   methods: {
+    // Fonction qui fait passer a la question suivante et insère en BD une fois le questionnaire le resultat obtenu par le candidat
     addResponse: function () {
+      // Check si l'utilisateur à bien sélectionner un reponse
       if (this.selected !== '') {
+        // Check si le questionnaire est terminé
         if (this.numQuestion + 1 >= this.questionnaire.questions.length) {
           const objResponse = this.questionnaire.questions[this.numQuestion].responses.find(r => r.value === this.selected)
           this.responseSelected.push(objResponse)
@@ -76,16 +82,18 @@ export default {
             nbgoodResponses: this.getNbGoodResponse(),
             nbQuestions: this.questionnaire.questions.length
           }
-          db.put(result).then(function (doc) {
-            console.log(doc)
-          })
+          // Insertion du resultat en base
+          db.put(result)
+          db.replicate.to(url)
         } else {
+          // Passage à la question suivant et update de l'objet responseSelected
           const objResponse = this.questionnaire.questions[this.numQuestion].responses
           this.responseSelected.push(objResponse.find(r => r.value === this.selected))
           this.selected = ''
           this.numQuestion = this.numQuestion + 1
         }
       } else {
+        // FeedBack sous forme de toast qui renseigne l'utilisateur lors de la non sélection d'un reponse
         this.$bvToast.toast(`Veuillez sélectionner une reponse`, {
           title: `Saisie impossible`,
           toaster: 'b-toaster-bottom-center',
@@ -95,11 +103,13 @@ export default {
         })
       }
     },
+    // Fonction qui charge le fichier JSON Questionnaire depuis la BD
     loadSurvey: function () {
       db.get('Questionnaire').then((doc, err) => {
         this.questionnaire = doc
       })
     },
+    // Fonction qui retourne les libellés reponses de la question en cours
     getResponse: function () {
       const values = []
       this.questionnaire.questions[this.numQuestion].responses.map(r => {
@@ -107,10 +117,10 @@ export default {
       })
       return values
     },
+    // Fonction qui calcul le nombre de bonne réponse validée par le candidat
     getNbGoodResponse: function () {
       return this.responseSelected.filter(r => r.goodResponse === true).length
     }
   }
 }
-// @ is an alias to /src
 </script>

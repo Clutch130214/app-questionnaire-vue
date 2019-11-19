@@ -10,17 +10,21 @@
           <div class="card-body">
             <h5 class="card-title text-center">Rentrez vos informations</h5>
               <div class="form-label-group">
-                <input v-model="name" type="text" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+                <!-- Input pour inscrire le nom -->
+                <input v-model="name" type="text" id="inputEmail" class="form-control" placeholder="Email address">
                 <label for="inputEmail">Nom</label>
               </div>
               <div class="form-label-group">
-                <input v-model="firstName" type="text" id="inputPassword" class="form-control" placeholder="Password" required>
+                <!-- Input pour inscrire le prénom -->
+                <input v-model="firstName" type="text" id="inputPassword" class="form-control" placeholder="Password">
                 <label for="inputPassword">Prénom</label>
               </div>
               <div class="form-label-group">
-                <input v-model="society" type="text" id="inputSociety" class="form-control" placeholder="Society" required>
+                <!-- Input pour inscrire l'entreprise -->
+                <input v-model="society" type="text" id="inputSociety" class="form-control" placeholder="Society">
                 <label for="inputSociety">Entreprise</label>
               </div>
+              <!-- Bouton pour commencez le test et insérer un nouveau candidat -->
               <button v-on:click="addCandidate()" class="btn btn-lg btn-primary btn-block text-uppercase">Commencez le test</button>
           </div>
         </div>
@@ -37,9 +41,8 @@
 <script>
 
 import PouchDB from 'pouchdb'
-var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD : 28/10/2019
-var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données : 28/10/2019
-db.replicate.to(url)
+var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD
+var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données
 
 export default {
   data () {
@@ -50,6 +53,7 @@ export default {
     }
   },
   methods: {
+    // Fonction qui ajoute un nouveau candidat en BD et renvoie vers la page de questionnaire
     addCandidate: function () {
       if (this.name !== '' || this.firstName !== '' || this.society !== '') {
         var candidate = {
@@ -62,6 +66,7 @@ export default {
         db.put(candidate).then(function (doc) {
           vm.$router.push({ path: '/survey', query: { user: doc.id } })
         })
+        db.replicate.to(url)
       } else {
         this.$bvToast.toast(`Veuillez remplir tout les champs`, {
           title: `Saisie impossible`,

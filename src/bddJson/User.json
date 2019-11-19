@@ -1,0 +1,12 @@
+{
+    "_id": "User",
+    "_rev": "3-89ac49c6d530cd1384c6dd05e98d95be",
+    "users": [
+      {
+        "id": "user_Bastien",
+        "name": "Chauveau",
+        "firstName": "Bastien",
+        "society": "Aquasys"
+      }
+    ]
+  }

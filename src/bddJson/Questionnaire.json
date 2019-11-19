@@ -1,0 +1,127 @@
+{
+    "_id": "Questionnaire",
+    "_rev": "3-89ac49c6d530cd1384c6dd05e98d95be",
+    "idSurvey": 1,
+    "questions": [
+      {
+        "id": 1,
+        "question": "Le nombre de décès en France par an d'origine électrique est de l'ordre de :",
+        "responses": [
+          {
+            "id": 1,
+            "idQuestion": 1,
+            "value": "Quelques centaines",
+            "goodResponse": false
+          },
+          {
+            "id": 2,
+            "idQuestion": 1,
+            "value": "Quelques dizaines",
+            "goodResponse": true
+          },
+          {
+            "id": 3,
+            "idQuestion": 1,
+            "value": "Quelques milliers",
+            "goodResponse": false
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "question": "Un choc électrique n'entraînant pas la mort s'appelle:",
+        "responses": [
+          {
+            "id": 1,
+            "idQuestion": 2,
+            "value": "Une électrocution",
+            "goodResponse": false
+          },
+          {
+            "id": 2,
+            "idQuestion": 2,
+            "value": "Une électrisation",
+            "goodResponse": true
+          },
+          {
+            "id": 3,
+            "idQuestion": 2,
+            "value": "Une électromagnétisation",
+            "goodResponse": false
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "question": "Lorsque l'on entre en contact avec le courant électrique via des pièces conductrices nues sous tension, on dit que le contact est:",
+        "responses": [
+          {
+            "id": 1,
+            "idQuestion": 3,
+            "value": "indirect",
+            "goodResponse": false
+          },
+          {
+            "id": 2,
+            "idQuestion": 3,
+            "value": "direct",
+            "goodResponse": true
+          },
+          {
+            "id": 3,
+            "idQuestion": 3,
+            "value": "instantané",
+            "goodResponse": false
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "question": "Parmi les 3 moyens de protection contre les contacts directs, un est faux: lequel ?",
+        "responses": [
+          {
+            "id": 1,
+            "idQuestion": 4,
+            "value": "Isoler les conducteurs sous tension",
+            "goodResponse": false
+          },
+          {
+            "id": 2,
+            "idQuestion": 4,
+            "value": "Employer une très basse tension de sécurité",
+            "goodResponse": true
+          },
+          {
+            "id": 3,
+            "idQuestion": 4,
+            "value": "Mettre en place des obstacles entre les conducteurs sous tension et les personnes",
+            "goodResponse": false
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "question": "Parmi les 3 facteurs influençant les dommages corporels, un seul est faux: lequel ?",
+        "responses": [
+          {
+            "id": 1,
+            "idQuestion": 5,
+            "value": "Le temps de passage du courant",
+            "goodResponse": false
+          },
+          {
+            "id": 2,
+            "idQuestion": 5,
+            "value": "L'intensité du courant",
+            "goodResponse": false
+          },
+          {
+            "id": 3,
+            "idQuestion": 5,
+            "value": "La température ambiante",
+            "goodResponse": true
+          }
+        ]
+      }
+    ]
+  }

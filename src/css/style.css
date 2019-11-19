@@ -10,14 +10,30 @@
     size: 100px;
 }
 
+.padding-right-1{
+  padding-right: 10px;
+}
+
+.align-right{
+  text-align: right;
+}
+
+.padding-left-1{
+  padding-left: 10px;
+}
+
+.align-left{
+  text-align: left;
+}
+
 :root {
   --input-padding-x: 1.5rem;
   --input-padding-y: .75rem;
 }
 
 body {
-  background: #f02626;
-  background: linear-gradient(to right, #42f569, #33AEFF);
+  background: rgb(238,174,202);
+  background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
 }
 
 .card-signin {

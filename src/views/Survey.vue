@@ -1,23 +1,32 @@
 
 <template>
 <body>
-  <div class="container">
+  <div class="container" v-cloak>
     <div class="row">
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card card-signin my-5">
           <div class="card-body">
-            <!-- Composant Question -->
-            <Question :question = question[numQuestion] ></Question>
-            <form class="form-signin">
-              <div class="form-label-group">
-                <input v-model="response" type="text" id="inputEmail" class="form-control" placeholder="Response" required autofocus>
-                <label for="inputEmail">Reponse</label>
-                <div class="mt-2">Value: {{ response }}</div>
+            <div v-if="this.questionnaire.questions && !this.surveyIsFinish">
+              <!-- Composant Question -->
+              <Question :question = this.questionnaire.questions[numQuestion].question ></Question>
+                <b-form-group>
+                  <b-form-radio-group
+                    v-model="selected"
+                    :options="getResponse()"
+                    name="radios-stacked"
+                    stacked
+                  ></b-form-radio-group>
+                </b-form-group>
+                <div v-on:click="addResponse()">
+                  <button class="btn btn-lg btn-primary btn-block text-uppercase">Validez</button>
+                </div>
+            </div>
+            <div v-if="this.surveyIsFinish">
+              <Result :result = this.getNbGoodResponse() :questionnaire = this.questionnaire.questions :summary = this.responseSelected ></Result>
+              <div class="padding-left-1 align-left">
+                  <router-link to="/home"><button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Retour à l'accueil</button></router-link>
               </div>
-              <div v-on:click="numQuestion = numQuestion+1">
-                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Validez</button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -32,34 +41,74 @@
 
 <script>
 import Question from '../components/Question.vue'
+import Result from '../components/Result.vue'
+import Questionnaire from '../bddJson/Questionnaire.json'
 import PouchDB from 'pouchdb'
 var db = new PouchDB('questionnaire_db') // Création de la connection à la BDD : 28/10/2019
 var url = 'http://localhost:5984/questionnaire_db' // Initialisation de l'url de ma base de données : 28/10/2019
+db.replicate.from(url)
 
 export default {
   components: {
-    Question
+    Question,
+    Result
   },
   data () {
     return {
       numQuestion: 0,
-      response: '',
-      question: [
-        'Le fromage',
-        'Oui',
-        'Obiwan Kenobi'
-      ]
+      selected: '',
+      questionnaire: Questionnaire,
+      responseSelected: [],
+      surveyIsFinish: false
     }
   },
   methods: {
-    addDB: function () {
-      var todo = {
-        _id: 'test'
+    addResponse: function () {
+      if (this.selected !== '') {
+        if (this.numQuestion + 1 >= this.questionnaire.questions.length) {
+          const objResponse = this.questionnaire.questions[this.numQuestion].responses.find(r => r.value === this.selected)
+          this.responseSelected.push(objResponse)
+          this.selected = ''
+          this.surveyIsFinish = true
+          var result = {
+            _id: 'result_' + this.$route.query.user,
+            idUser: this.$route.query.user,
+            nbgoodResponses: this.getNbGoodResponse(),
+            nbQuestions: this.questionnaire.questions.length
+          }
+          db.put(result).then(function (doc) {
+            console.log(doc)
+          })
+        } else {
+          const objResponse = this.questionnaire.questions[this.numQuestion].responses
+          this.responseSelected.push(objResponse.find(r => r.value === this.selected))
+          this.selected = ''
+          this.numQuestion = this.numQuestion + 1
+        }
+      } else {
+        this.$bvToast.toast(`Veuillez sélectionner une reponse`, {
+          title: `Saisie impossible`,
+          toaster: 'b-toaster-bottom-center',
+          variant: 'primary',
+          solid: true,
+          appendToast: true
+        })
       }
-      db.put(todo).then(function (doc) {
-        console.log(doc)
+    },
+    loadSurvey: function () {
+      db.get('Questionnaire').then((doc, err) => {
+        this.questionnaire = doc
       })
-      db.replicate.to(url)
+    },
+    getResponse: function () {
+      const values = []
+      this.questionnaire.questions[this.numQuestion].responses.map(r => {
+        values.push(r.value)
+      })
+      return values
+    },
+    getNbGoodResponse: function () {
+      return this.responseSelected.filter(r => r.goodResponse === true).length
     }
   }
 }
